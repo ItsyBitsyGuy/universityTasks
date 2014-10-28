@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1413161613 source:d:\everth\sources\univer\bignumbers\main.cpp
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<fstream>
+	<string>
+	<vector>
+
+1414338265 source:d:\everth\sources\github\otherprogramming\bignumbers\main.cpp
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<fstream>
+	<string>
+	<vector>
+
+1414370370 source:d:\everth\sources\github\uni\otherprogramming\bignumbers\main.cpp
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<fstream>
+	<string>
+	<vector>
+
