@@ -11,11 +11,11 @@ rigthBracket = 40
 empty = 50
 
 def priority(s):
-    if s == '(':
+    if s is '(':
         return 0
-    elif s == '+' or '-':
+    elif s is '+' or s is '-':
         return 1
-    elif s == '*' or '/' or '%':
+    elif s is '*' or s is '/' or s is '%':
         return 2
     else:
         return 99
@@ -25,16 +25,17 @@ def typeOf(s):
         return leftBracket
     elif s is ')':
         return rigthBracket
-    elif s is '+' or s is '-' or s is '*' or s is '%' or s is '/':
+    elif s is '+' or s is '-' or s is '*' or s is '%' or s is '/' or s is '^':
         return operator
     elif s is ' ':
         return empty
-    else :
+    else:
         return operand
 
 #infix to postfix
 infix = input("Enter expression : ")
-infix = re.findall(r'\d+|[+-/*()]', infix)
+infix = infix.replace('(', '( ').replace(')', ' )').split()
+
 for i in infix:
     type = typeOf(i)
     if type is leftBracket:
@@ -57,16 +58,22 @@ for i in infix:
 while len(stack) > 0:
     postfix.append(stack.pop())
 
+print(postfix)
 postfix = list(reversed(postfix))
 stack = []
 
 #let's calculate
-while(postfix):
+while postfix:
     a = postfix.pop()
-    if a.isdigit():
+    if a.isdigit() or a[0] == '-' and len(a) > 1:
+        #print('* ' + a)
         stack.append(a)
     else:
+        #print('** ' + a)
         o1, o2 = stack.pop(), stack.pop()
-        stack.append(eval(str(o2) + a + str(o1)))
+        if a == '^':
+            stack.append(eval('(' + str(o2) + ')' + '**' + '(' + str(o1) + ')'))
+        else:
+            stack.append(eval(str(o2) + a + str(o1)))
 
 print(stack[0])
