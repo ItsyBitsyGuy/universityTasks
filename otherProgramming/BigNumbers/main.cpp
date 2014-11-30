@@ -74,8 +74,10 @@ void sum(bigNumber* A, bigNumber* B, string* sResult)
     for(int i = 0; i < A->integer.size(); i++)
     {
         result->integer[i] += B->integer[i];
-        result->integer[i+1] += result->integer[i] / 10;
-        result->integer[i] %= 10;
+        result->integer[i+1] += result->integer[i] / 8;
+        result->integer[i] %= 8;
+        //result->integer[i+1] += result->integer[i] / 10;
+        //result->integer[i] %= 10;
     }
     result->dotAt = A->dotAt + 1;
 
@@ -98,7 +100,8 @@ void diffirence(bigNumber* A, bigNumber* B, string* sResult)
     {
         result->integer[i] = result->integer[i] - B->integer[i];
         if(result->integer[i] < 0) {
-            result->integer[i] += 10;
+            //result->integer[i] += 10;
+            result->integer[i] += 8;
             result->integer[i+1] -= 1;
         }
     }
@@ -124,6 +127,29 @@ int compare(bigNumber* A, bigNumber* B)
     return 1;
 }
 
+bool sanitize(string* s)
+{
+    bool dotDetected = false;
+    for(int i = 0; i < s->length(); i++)
+    {
+        if(s->c_str()[i] > '7' or s->c_str()[i] < '0')
+        {
+            if(s->c_str()[i] == '.')
+            {
+                if(dotDetected) return false;
+                dotDetected = true;
+                if(i+1 == s->length()) return false;
+                if(s->c_str()[i+1] > '7' or s->c_str()[i+1] < '0') return false;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+    if(dotDetected == false) return false;
+    return true;
+}
+
 int main()
 {
     string sA, sB, sSum, sDiff;
@@ -136,6 +162,11 @@ int main()
     {
         getline(in, sA);
         getline(in, sB);
+    }
+
+    if(!sanitize(&sA) or !sanitize(&sB)) {
+        cout << "Bad input. Quitting...\n";
+        return -1;
     }
 
     sA = clear(&sA);
