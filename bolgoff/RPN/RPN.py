@@ -71,9 +71,13 @@ while postfix:
     else:
         #print('** ' + a)
         o1, o2 = stack.pop(), stack.pop()
-        if a == '^':
-            stack.append(eval('(' + str(o2) + ')' + '**' + '(' + str(o1) + ')'))
-        else:
-            stack.append(eval(str(o2) + a + str(o1)))
+        try:
+            if a == '^':
+                stack.append(eval('(' + str(o2) + ')' + '**' + '(' + str(o1) + ')'))
+            else:
+                stack.append(eval(str(o2) + a + str(o1)))
+        except ZeroDivisionError:
+            print("Hey, division by zero!")
+            exit(-1)
 
 print(stack[0])

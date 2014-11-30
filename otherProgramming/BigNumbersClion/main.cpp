@@ -3,7 +3,6 @@
 #include <string>
 using namespace std;
 
-
 string clean(string* s)
 {
     string l_s = *s;
