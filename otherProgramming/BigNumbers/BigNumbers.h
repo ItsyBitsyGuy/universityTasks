@@ -130,8 +130,25 @@ void PrintBigNumber(BigNumber* B) {
     cout << '\n';
 }
 
+string BigNumberToString(BigNumber* A)
+{
+    stringstream temp;
+    for(int i = A->integer.size() - 1; i >= 0; i--)
+        temp << oct << A->integer[i];
+    temp << '.';
+    for(int i = A->real.size() - 1; i >= 0; i--)
+        temp << setfill('0') << setw(4) << oct << A->real[i];
+    return Clear(&temp.str());
+}
+
+
 bool WriteFile(string filename, BigNumber* number1, BigNumber* number2) {
-    //not implemented
+    ofstream out(filename);
+    if (out.is_open()) {
+        out << BigNumberToString(number1) << '\n' << BigNumberToString(number2);
+        return true;
+    }
+    return false;
 }
 
 
@@ -189,9 +206,6 @@ void Add(string* A, string* B, BigNumber* result) {
         result->integer[i] = ((nA->integer[i] + nB->integer[i]) & 0xFFF) + carry;
         carry = (nA->integer[i] + nB->integer[i]) >> 12;
     }
-
-    PrintBigNumber(result);
-
 }
 
 void Substract(string* A, string* B, BigNumber* result) {
@@ -242,8 +256,6 @@ void Substract(string* A, string* B, BigNumber* result) {
             result->integer[i+1]--;
         }
     }
-
-    PrintBigNumber(result);
 }
 
 

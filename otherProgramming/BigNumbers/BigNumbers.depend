@@ -7,11 +7,11 @@
 	<string>
 	<vector>
 
-1417505339 source:d:\everth\sources\github\universitytasks\otherprogramming\bignumbers\main.cpp
+1417515716 source:d:\everth\sources\github\universitytasks\otherprogramming\bignumbers\main.cpp
 	<iostream>
 	"BigNumbers.h"
 
-1417505330 d:\everth\sources\github\universitytasks\otherprogramming\bignumbers\bignumbers.h
+1417515791 d:\everth\sources\github\universitytasks\otherprogramming\bignumbers\bignumbers.h
 	<stdlib.h>
 	<stdio.h>
 	<iostream>
