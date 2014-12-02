@@ -9,14 +9,13 @@
 
 using namespace std;
 
-struct BigNumber
-{
+struct BigNumber {
     vector<int> integer;
     vector<int> real;
 };
 
-string Clear(string* s)
-{
+
+string Clear(string* s) {
     string l_s = *s;
     int i = 0, j = l_s.size(); j--;
     while (l_s[i] == '0' && l_s[i+1] != '.') i++;
@@ -25,8 +24,8 @@ string Clear(string* s)
     return l_s.substr(i, j - i + 1);
 }
 
-bool Sanitize(string* s)
-{
+
+bool Sanitize(string* s) {
     bool dotDetected = false;
     for(int i = 0; i < s->length(); i++) {
         if(s->c_str()[i] > '7' or s->c_str()[i] < '0') {
@@ -100,8 +99,7 @@ bool ReadFile(string filename, string* number1, string* number2) {
 }
 
 
-void DoAlign(BigNumber* A, BigNumber* B)
-{
+void DoAlign(BigNumber* A, BigNumber* B) {
     //integer
     if(A->integer.size() < B->integer.size()) {
         for(int i = 0; i < B->integer.size() - A->integer.size(); i++)
@@ -130,8 +128,8 @@ void PrintBigNumber(BigNumber* B) {
     cout << '\n';
 }
 
-string BigNumberToString(BigNumber* A)
-{
+
+string BigNumberToString(BigNumber* A) {
     stringstream temp;
     for(int i = A->integer.size() - 1; i >= 0; i--)
         temp << oct << A->integer[i];
