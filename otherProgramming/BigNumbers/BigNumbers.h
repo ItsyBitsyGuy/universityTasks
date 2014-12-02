@@ -1,94 +1,13 @@
-bool ReadFile(string filename, string* number1, string* number2) {
-    ifstream in(filename);
-    if (in.is_open()) {
-        getline(in, number1);
-        getline(in, number2);
-        if(!sanitize(number1) or !sanitize(number2)) {
-            cout << "Bad input. Quitting...\n";
-            return false;
-        }
-        return true;
-        number1 = Clear(number1);
-        number2 = Clear(number2);
-    }
-    return false;
-}
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <iomanip>
 
-bool WriteFile(string filename) {
-    return true;
-}
-
-void Add(string* A, string* B) {
-    BigNumber* nA = new BigNumber;
-    BigNumber* nB = new BigNumber;
-    BigNumber* nT;
-
-    fillBigNumber(A, nA);
-    fillBigNumber(B, nB);
-
-    doAlign(nA, nB);
-
-    printBigNumber(nA);
-    printBigNumber(nB);
-
-    if(Compare(nA, nB) == 0) {
-        cout << "A is less than B!\n";
-        nT = nA;
-        A = nB;
-        B = nT;
-    }
-
-    BigNumber* result = new bigNumber;
-    //real parts first
-    for(int i = 0; i < nA->real.size(); i++)
-    {
-        result->real.push_back(nA->real.size());
-    }
-    //then integer
-    for(int i = 0; i < nA->integer.size(); i++)
-    {
-        result->integer.push_back(nA->integer[i]);
-    }
-    result->integer.push_back(0);
-
-    int carry = 0;
-
-    for(int i = 0; i < nA->real.size(); i++)
-    {
-        result->real[i] = ((nA->real[i] + nB->real[i]) & 0xFFF) + carry;
-        carry = (nA->real[i] + nB->real[i]) >> 12;
-    }
-
-    for(int i = 0; i < nA->integer.size(); i++)
-    {
-        result->integer[i] = ((nA->integer[i] + nB->integer[i]) & 0xFFF) + carry;
-        carry = (nA->integer[i] + nB->integer[i]) >> 12;
-    }
-
-    printBigNumber(result);
-
-}
-
-void Substract(string* A, string* B) {
-
-}
-
-int Compare(bigNumber* A, bigNumber* B) {
-    for(int i = A->integer.size() - 1; i >= 0; i--) {
-        if(A->integer[i] > B->integer[i]) return 2;
-        if(A->integer[i] < B->integer[i]) return 0;
-    }
-    for(int i = A->real.size() - 1; i >= 0; i--) {
-        if(A->real[i] > B->real[i]) return 2;
-        if(A->real[i] < B->real[i]) return 0;
-    }
-    return 1;
-}
-
-int Compare(string* A, string* B) {
-    //not implemented
-}
-
+using namespace std;
 
 struct BigNumber
 {
@@ -96,8 +15,7 @@ struct BigNumber
     vector<int> real;
 };
 
-
-string clear(string* s)
+string Clear(string* s)
 {
     string l_s = *s;
     int i = 0, j = l_s.size(); j--;
@@ -107,8 +25,28 @@ string clear(string* s)
     return l_s.substr(i, j - i + 1);
 }
 
+bool Sanitize(string* s)
+{
+    bool dotDetected = false;
+    for(int i = 0; i < s->length(); i++) {
+        if(s->c_str()[i] > '7' or s->c_str()[i] < '0') {
+            if(s->c_str()[i] == '.') {
+                if(dotDetected) return false;
+                dotDetected = true;
+                if(i+1 == s->length()) return false;
+                if(s->c_str()[i+1] > '7' or s->c_str()[i+1] < '0') return false;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+    if(dotDetected == false) return false;
+    return true;
+}
 
-void fillBigNumber(string* s, bigNumber* N) {
+
+void FillBigNumber(string* s, BigNumber* N) {
     int dotPos = s->find('.');
     int t = 0;
     string tempString;
@@ -145,44 +83,24 @@ void fillBigNumber(string* s, bigNumber* N) {
 }
 
 
-int compare(bigNumber* A, bigNumber* B) {
-    if(A->dotAt > B->dotAt) return 2;
-    if(A->dotAt < B->dotAt) return 0;
-    //integer parts are equal length
-    for(int i = A->integer.size() - 1; i >= 0; i--) {
-        if(A->integer[i] > B->integer[i]) return 2;
-        if(A->integer[i] < B->integer[i]) return 0;
-    }
-    for(int i = A->real.size() - 1; i >= 0; i--) {
-        if(A->real[i] > B->real[i]) return 2;
-        if(A->real[i] < B->real[i]) return 0;
-    }
-    return 1;
-}
-
-
-bool sanitize(string* s)
-{
-    bool dotDetected = false;
-    for(int i = 0; i < s->length(); i++) {
-        if(s->c_str()[i] > '7' or s->c_str()[i] < '0') {
-            if(s->c_str()[i] == '.') {
-                if(dotDetected) return false;
-                dotDetected = true;
-                if(i+1 == s->length()) return false;
-                if(s->c_str()[i+1] > '7' or s->c_str()[i+1] < '0') return false;
-            }
-            else {
-                return false;
-            }
+bool ReadFile(string filename, string* number1, string* number2) {
+    ifstream in(filename);
+    if (in.is_open()) {
+        getline(in, *number1);
+        getline(in, *number2);
+        if(!Sanitize(number1) or !Sanitize(number2)) {
+            cout << "Bad input. Quitting...\n";
+            return false;
         }
+        *number1 = Clear(number1);
+        *number2 = Clear(number2);
+        return true;
     }
-    if(dotDetected == false) return false;
-    return true;
+    return false;
 }
 
 
-void doAlign(bigNumber* A, bigNumber* B)
+void DoAlign(BigNumber* A, BigNumber* B)
 {
     //integer
     if(A->integer.size() < B->integer.size()) {
@@ -202,8 +120,8 @@ void doAlign(bigNumber* A, bigNumber* B)
     }
 }
 
-void printBigNumber(bigNumber* B)
-{
+
+void PrintBigNumber(BigNumber* B) {
     for(int i = B->integer.size() - 1; i >= 0; i--)
         cout << oct << B->integer[i];
     cout << '.';
@@ -212,76 +130,131 @@ void printBigNumber(bigNumber* B)
     cout << '\n';
 }
 
+bool WriteFile(string filename, BigNumber* number1, BigNumber* number2) {
+    //not implemented
+}
 
-void add(bigNumber* A, bigNumber* B)
-{
-    bigNumber* result = new bigNumber;
+
+int Compare(BigNumber* A, BigNumber* B) {
+    for(int i = A->integer.size() - 1; i >= 0; i--) {
+        if(A->integer[i] > B->integer[i]) return 2;
+        if(A->integer[i] < B->integer[i]) return 0;
+    }
+    for(int i = A->real.size() - 1; i >= 0; i--) {
+        if(A->real[i] > B->real[i]) return 2;
+        if(A->real[i] < B->real[i]) return 0;
+    }
+    return 1;
+}
+
+
+void Add(string* A, string* B, BigNumber* result) {
+    BigNumber* nA = new BigNumber;
+    BigNumber* nB = new BigNumber;
+    BigNumber* nT;
+
+    FillBigNumber(A, nA);
+    FillBigNumber(B, nB);
+
+    DoAlign(nA, nB);
+
+    if(Compare(nA, nB) == 0) {
+        nT = nA;
+        nA = nB;
+        nB = nT;
+    }
+
     //real parts first
-    for(int i = 0; i < A->real.size(); i++)
+    for(int i = 0; i < nA->real.size(); i++)
     {
-        result->real.push_back(A->real.size());
+        result->real.push_back(nA->real.size());
     }
     //then integer
-    for(int i = 0; i < A->integer.size(); i++)
+    for(int i = 0; i < nA->integer.size(); i++)
     {
-        result->integer.push_back(A->integer[i]);
+        result->integer.push_back(nA->integer[i]);
     }
     result->integer.push_back(0);
 
     int carry = 0;
 
-    for(int i = 0; i < A->real.size(); i++)
+    for(int i = 0; i < nA->real.size(); i++)
     {
-        result->real[i] = ((A->real[i] + B->real[i]) & 0xFFF) + carry;
-        carry = (A->real[i] + B->real[i]) >> 12;
+        result->real[i] = ((nA->real[i] + nB->real[i]) & 0xFFF) + carry;
+        carry = (nA->real[i] + nB->real[i]) >> 12;
     }
 
-    for(int i = 0; i < A->integer.size(); i++)
+    for(int i = 0; i < nA->integer.size(); i++)
     {
-        result->integer[i] = ((A->integer[i] + B->integer[i]) & 0xFFF) + carry;
-        carry = (A->integer[i] + B->integer[i]) >> 12;
+        result->integer[i] = ((nA->integer[i] + nB->integer[i]) & 0xFFF) + carry;
+        carry = (nA->integer[i] + nB->integer[i]) >> 12;
     }
 
-    printBigNumber(result);
+    PrintBigNumber(result);
+
 }
 
-void substract(bigNumber* A, bigNumber* B)
-{
-    bigNumber* result = new bigNumber;
+void Substract(string* A, string* B, BigNumber* result) {
+    BigNumber* nA = new BigNumber;
+    BigNumber* nB = new BigNumber;
+    BigNumber* nT;
+
+    FillBigNumber(A, nA);
+    FillBigNumber(B, nB);
+
+    DoAlign(nA, nB);
+
+    if(Compare(nA, nB) == 0) {
+        nT = nA;
+        nA = nB;
+        nB = nT;
+    }
+
     //real parts first
-    for(int i = 0; i < A->real.size(); i++)
+    for(int i = 0; i < nA->real.size(); i++)
     {
-        result->real.push_back(A->real.size());
+        result->real.push_back(nA->real.size());
     }
     //then integer
-    for(int i = 0; i < A->integer.size(); i++)
+    for(int i = 0; i < nA->integer.size(); i++)
     {
-        result->integer.push_back(A->integer[i]);
+        result->integer.push_back(nA->integer[i]);
     }
 
-    int carry = 0;
-
-    for(int i = 0; i < A->real.size(); i++)
+    for(int i = 0; i < nA->real.size(); i++)
     {
-        result->real[i] = (A->real[i] - B->real[i]);
+        result->real[i] = (nA->real[i] - nB->real[i]);
         if(result->real[i] < 0) {
             result->real[i] += 0x1000;
-            if(i < A->real.size() - 1) {
+            if(i < nA->real.size() - 1) {
                 result->real[i+1]--;
             }
             else
-                A->integer[0]--;
+                nA->integer[0]--;
         }
     }
 
-    for(int i = 0; i < A->integer.size(); i++)
+    for(int i = 0; i < nA->integer.size(); i++)
     {
-        result->integer[i] = (A->integer[i] - B->integer[i]);
+        result->integer[i] = (nA->integer[i] - nB->integer[i]);
         if(result->integer[i] < 0) {
             result->integer[i] += 0x1000;
             result->integer[i+1]--;
         }
     }
 
-    printBigNumber(result);
+    PrintBigNumber(result);
+}
+
+
+int Compare(string* A, string* B) {
+    BigNumber* nA = new BigNumber;
+    BigNumber* nB = new BigNumber;
+
+    FillBigNumber(A, nA);
+    FillBigNumber(B, nB);
+
+    DoAlign(nA, nB);
+
+    return Compare(nA, nB);
 }
