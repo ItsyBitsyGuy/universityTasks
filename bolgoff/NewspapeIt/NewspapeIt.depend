@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1416970585 source:d:\everth\sources\univer\bolgov\newspapeit\main.cpp
+	<iostream>
+	<vector>
+	<fstream>
+	<string>
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+
+1410253683 d:\everth\sources\univer\bolgov\newspapeit\newspapeit.h
+
