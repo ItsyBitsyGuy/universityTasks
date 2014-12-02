@@ -7,7 +7,7 @@
 	<string>
 	<vector>
 
-1417412917 source:d:\everth\sources\github\universitytasks\otherprogramming\bignumbers\main.cpp
+1417500584 source:d:\everth\sources\github\universitytasks\otherprogramming\bignumbers\main.cpp
 	<stdlib.h>
 	<stdio.h>
 	<iostream>
@@ -15,4 +15,5 @@
 	<string>
 	<vector>
 	<sstream>
+	<iomanip>
 

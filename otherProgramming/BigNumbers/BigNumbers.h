@@ -1,18 +1,97 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <sstream>
-#include <iomanip>
+bool ReadFile(string filename, string* number1, string* number2) {
+    ifstream in(filename);
+    if (in.is_open()) {
+        getline(in, number1);
+        getline(in, number2);
+        if(!sanitize(number1) or !sanitize(number2)) {
+            cout << "Bad input. Quitting...\n";
+            return false;
+        }
+        return true;
+        number1 = Clear(number1);
+        number2 = Clear(number2);
+    }
+    return false;
+}
 
-using namespace std;
+bool WriteFile(string filename) {
+    return true;
+}
+
+void Add(string* A, string* B) {
+    BigNumber* nA = new BigNumber;
+    BigNumber* nB = new BigNumber;
+    BigNumber* nT;
+
+    fillBigNumber(A, nA);
+    fillBigNumber(B, nB);
+
+    doAlign(nA, nB);
+
+    printBigNumber(nA);
+    printBigNumber(nB);
+
+    if(Compare(nA, nB) == 0) {
+        cout << "A is less than B!\n";
+        nT = nA;
+        A = nB;
+        B = nT;
+    }
+
+    BigNumber* result = new bigNumber;
+    //real parts first
+    for(int i = 0; i < nA->real.size(); i++)
+    {
+        result->real.push_back(nA->real.size());
+    }
+    //then integer
+    for(int i = 0; i < nA->integer.size(); i++)
+    {
+        result->integer.push_back(nA->integer[i]);
+    }
+    result->integer.push_back(0);
+
+    int carry = 0;
+
+    for(int i = 0; i < nA->real.size(); i++)
+    {
+        result->real[i] = ((nA->real[i] + nB->real[i]) & 0xFFF) + carry;
+        carry = (nA->real[i] + nB->real[i]) >> 12;
+    }
+
+    for(int i = 0; i < nA->integer.size(); i++)
+    {
+        result->integer[i] = ((nA->integer[i] + nB->integer[i]) & 0xFFF) + carry;
+        carry = (nA->integer[i] + nB->integer[i]) >> 12;
+    }
+
+    printBigNumber(result);
+
+}
+
+void Substract(string* A, string* B) {
+
+}
+
+int Compare(bigNumber* A, bigNumber* B) {
+    for(int i = A->integer.size() - 1; i >= 0; i--) {
+        if(A->integer[i] > B->integer[i]) return 2;
+        if(A->integer[i] < B->integer[i]) return 0;
+    }
+    for(int i = A->real.size() - 1; i >= 0; i--) {
+        if(A->real[i] > B->real[i]) return 2;
+        if(A->real[i] < B->real[i]) return 0;
+    }
+    return 1;
+}
+
+int Compare(string* A, string* B) {
+    //not implemented
+}
 
 
-struct bigNumber
+struct BigNumber
 {
-    int dotAt;
     vector<int> integer;
     vector<int> real;
 };
@@ -205,52 +284,4 @@ void substract(bigNumber* A, bigNumber* B)
     }
 
     printBigNumber(result);
-}
-
-int main()
-{
-    string sA, sB, sSum, sDiff;
-    bigNumber *A = new bigNumber;
-    bigNumber *B = new bigNumber;
-    bigNumber *T;
-
-    ifstream in("in.txt");
-    if (in.is_open()) {
-        getline(in, sA);
-        getline(in, sB);
-    }
-
-    if(!sanitize(&sA) or !sanitize(&sB)) {
-        cout << "Bad input. Quitting...\n";
-        return -1;
-    }
-
-    sA = clear(&sA);
-    sB = clear(&sB);
-
-    fillBigNumber(&sA, A);
-    fillBigNumber(&sB, B);
-
-    doAlign(A, B);
-
-    printBigNumber(A);
-    printBigNumber(B);
-
-
-    //cout << sA << " || " << sB << '\n';
-
-    if(sA.compare(sB) == 0) cout << "The numbers are equal, by the way\n";
-
-
-    if(compare(A, B) == 0) {
-        cout << "A is less than B!\n";
-        T = A;
-        A = B;
-        B = T;
-    }
-
-    add(A, B);
-    substract(A, B);
-
-    return 0;
 }
