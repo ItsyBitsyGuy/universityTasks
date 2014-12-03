@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -105,7 +103,7 @@ void DoAlign(BigNumber* A, BigNumber* B) {
         for(int i = 0; i < B->integer.size() - A->integer.size(); i++)
             A->integer.push_back(0);
     }
-    else if (A->integer.size() < B->integer.size()) {
+    else if (B->integer.size() < A->integer.size()) {
         for(int i = 0; i < A->integer.size() - B->integer.size(); i++)
             B->integer.push_back(0);
     }
@@ -119,24 +117,29 @@ void DoAlign(BigNumber* A, BigNumber* B) {
 }
 
 
-void PrintBigNumber(BigNumber* B) {
-    for(int i = B->integer.size() - 1; i >= 0; i--)
-        cout << oct << B->integer[i];
-    cout << '.';
-    for(int i = B->real.size() - 1; i >= 0; i--)
-        cout << setfill('0') << setw(4) << oct <<  B->real[i];
-    cout << '\n';
+string getZeroes(int num)
+{
+    stringstream t;
+    string result;
+    t << oct << num;
+    for(int i = 0; i < 4 - t.str().length(); i++)
+    {
+        result += '0';
+    }
+    return result;
 }
 
 
 string BigNumberToString(BigNumber* A) {
     stringstream temp;
-    for(int i = A->integer.size() - 1; i >= 0; i--)
-        temp << oct << A->integer[i];
+    for(int i = A->integer.size() - 1; i >= 0; i--) {
+        temp << oct << getZeroes(A->integer[i]) << A->integer[i];
+    }
     temp << '.';
     for(int i = A->real.size() - 1; i >= 0; i--)
-        temp << setfill('0') << setw(4) << oct << A->real[i];
+        temp << getZeroes(A->real[i]) << oct << A->real[i];
     return Clear(&temp.str());
+    //return temp.str();
 }
 
 
@@ -179,6 +182,8 @@ void Add(string* A, string* B, BigNumber* result) {
         nB = nT;
     }
 
+    //cout << "HOLA\n" << BigNumberToString(nA) << '\n' << BigNumberToString(nB) << "\nHOLA\n";
+
     //real parts first
     for(int i = 0; i < nA->real.size(); i++)
     {
@@ -206,6 +211,7 @@ void Add(string* A, string* B, BigNumber* result) {
     }
 }
 
+
 void Substract(string* A, string* B, BigNumber* result) {
     BigNumber* nA = new BigNumber;
     BigNumber* nB = new BigNumber;
@@ -221,6 +227,8 @@ void Substract(string* A, string* B, BigNumber* result) {
         nA = nB;
         nB = nT;
     }
+
+    //cout << "HOLA\n" << BigNumberToString(nA) << '\n' << BigNumberToString(nB) << "\nHOLA\n";
 
     //real parts first
     for(int i = 0; i < nA->real.size(); i++)
