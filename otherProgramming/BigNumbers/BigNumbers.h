@@ -182,8 +182,6 @@ void Add(string* A, string* B, BigNumber* result) {
         nB = nT;
     }
 
-    //cout << "HOLA\n" << BigNumberToString(nA) << '\n' << BigNumberToString(nB) << "\nHOLA\n";
-
     //real parts first
     for(int i = 0; i < nA->real.size(); i++)
     {
@@ -211,7 +209,6 @@ void Add(string* A, string* B, BigNumber* result) {
     }
 }
 
-
 void Substract(string* A, string* B, BigNumber* result) {
     BigNumber* nA = new BigNumber;
     BigNumber* nB = new BigNumber;
@@ -228,12 +225,10 @@ void Substract(string* A, string* B, BigNumber* result) {
         nB = nT;
     }
 
-    //cout << "HOLA\n" << BigNumberToString(nA) << '\n' << BigNumberToString(nB) << "\nHOLA\n";
-
     //real parts first
     for(int i = 0; i < nA->real.size(); i++)
     {
-        result->real.push_back(nA->real.size());
+        result->real.push_back(nA->real[i]);
     }
     //then integer
     for(int i = 0; i < nA->integer.size(); i++)
@@ -243,20 +238,23 @@ void Substract(string* A, string* B, BigNumber* result) {
 
     for(int i = 0; i < nA->real.size(); i++)
     {
-        result->real[i] = (nA->real[i] - nB->real[i]);
+        cout << result->real[i] << " - " << nB->real[i] << '\n';
+        result->real[i] = (result->real[i] - nB->real[i]);
         if(result->real[i] < 0) {
             result->real[i] += 0x1000;
             if(i < nA->real.size() - 1) {
                 result->real[i+1]--;
             }
             else
-                nA->integer[0]--;
+                result->integer[0]--;
         }
     }
+    cout << "HOLA " << BigNumberToString(result) << " HOLA\n";
 
     for(int i = 0; i < nA->integer.size(); i++)
     {
-        result->integer[i] = (nA->integer[i] - nB->integer[i]);
+        //cout << "HOLA\n" << BigNumberToString(result) << "\nHOLA\n";
+        result->integer[i] = (result->integer[i] - nB->integer[i]);
         if(result->integer[i] < 0) {
             result->integer[i] += 0x1000;
             result->integer[i+1]--;
